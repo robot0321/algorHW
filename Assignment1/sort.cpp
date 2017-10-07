@@ -17,9 +17,7 @@ void insertion_sort(int* array, int l, int r){
 	for (int i = l; i <= r; i++) {
 		for (int j = i; j>l; j--) {
 			if (array[j] < array[j - 1]) {
-				temp = array[j]; //swap
-				array[j] = array[j - 1];
-				array[j - 1] = temp;
+				swap(array, j, j - 1);
 			}
 			else {
 				break;
@@ -65,15 +63,37 @@ void merge(int* array, int l, int r, int half) {
 				array[i] = right_arr[R_ptr++];
 			}
 		}
+
+		delete[] left_arr;
+		delete[] right_arr;
 }
 
 void quick_sort(int* array, int l, int r){
 // Implement here!
+	if (l != r) {
+		int small = l;
+		int pivot = r;
+		int eqbig = r - 1;
+		while (1) {
+			while (array[small] < array[pivot]) {
+				small++;
+			}
+			while (array[eqbig] >= array[pivot]) {
+				eqbig--;
+			}
+			if (small < eqbig) {
+				swap(array, small, eqbig);
+			}
+			else {
+				break;
+			}
+		}
 
+	}
 }
 
 void heap_sort(int* array, int size){
-// Implement here!
+// Implement here!  
 }
 
 void stooge_sort(int* array, int l, int r){
@@ -84,6 +104,12 @@ void radix_sort(int* array, int l, int r, int d){
 //implement here!
 }
 
+
+void swap(int* array, int i, int j) {
+	int temp = array[j]; //swap
+	array[j] = array[i];
+	array[i] = temp;
+}
 
 void debug(int* array, int l, int r) {
 	for (int k = l; k<=r; k++) {

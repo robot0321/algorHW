@@ -8,5 +8,5 @@ void heap_sort(int* array,int size);
 void stooge_sort(int* array, int l, int r);
 void radix_sort(int* array, int l, int r, int d);
 
-
+void swap(int* array, int i, int j);
 void debug(int* array, int l, int r);
