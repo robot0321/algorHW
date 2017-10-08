@@ -123,31 +123,37 @@ void tri_max(int* array, int parent, int child1, int child2){
 }
 
 void max_heapify(int* array, int size, int root_idx){
-	int child1_idx = 2*root_idx;
-	int child2_idx = 2*root_idx + 1;
-	if(size<child2_idx){
-		
-	}else if(size<child1_idx){
-		
-	}
-	if(array[child1_idx] > array[root_idx] || array[child2_idx] > array[root_idx]){
-		if(array[child1_idx] > array[child2_idx]){
-			swap(array, child1_idx, root);
-			max_heapify()
+	int child1_idx = 2*root_idx+1;
+	int child2_idx = 2*root_idx+2;
+	if(size>=child2_idx){
+		if (array[child1_idx] > array[root_idx] || array[child2_idx] > array[root_idx]) {
+			if (array[child1_idx] > array[child2_idx]) {
+				swap(array, child1_idx, root_idx);
+				max_heapify(array, size, child1_idx);
+			}
+			else {
+				swap(array, child2_idx, root_idx);
+				max_heapify(array, size, child2_idx);
+			}
 		}
-	}
+	}else if(size==child1_idx){
+		if (array[child1_idx] > array[root_idx]) {
+			swap(array, child1_idx, root_idx);
+			max_heapify(array, size, child1_idx);
+		} 
+	}	
 }
 
 void build_max_heap(int* array, int size){
-	build_max_heap(array, )
+	//build_max_heap(array, )
 }
 
 void heap_sort(int* array, int size){
 // Implement here!  
 	build_max_heap(array, size);
-	for(int i=0;i<size;i++){
+	for(int i=0;i<size-1;i++){
 		swap(array, 0, size-1-i);
-		max_heapify(array, size, root_idx);
+		max_heapify(array, size-2-i, 0);
 		debug(array, 0, size-1);
 	}
 }
@@ -246,7 +252,20 @@ int main(){
 	//insertion_sort(array, 0, size-1);
 	//merge_sort(array, 0, size-1);
 	//quick_sort(array, 0, size-1); // ¸¾¿¡ ¾Èµë
-	heap_sort(array, size); // ±¸Çöx
+	int* a = new int[5];
+	a[0] = 1;
+	a[1] = 8;
+	a[2] = 3;
+	a[3] = 4;
+	a[4] = 5;
+	max_heapify(a, 5, 0);
+	debug(a, 0, 4);
+	delete[] a;
+	
+	int b;
+	std::cin >> b;
+
+	//heap_sort(array, size); // ±¸Çöx
 	//selection_sort(array, 0, size-1); 
 	//bubble_sort(array, 0, size-1);
 	//stooge_sort(array, 0, size-1);
