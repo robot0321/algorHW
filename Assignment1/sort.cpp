@@ -11,7 +11,6 @@
 
 #define largest_digit 5
 
-
 void selection_sort(int* array, int l, int r){
 // Implement here!
 	for(int i=l; i<=r;i++){
@@ -120,16 +119,6 @@ void quick_sort(int* array, int l, int r){
 	}
 }
 
-void tri_max(int* array, int parent, int child1, int child2){
-	if(array[parent]<array[child2] || array[parent]<array[child1]){
-		if(array[child1]<array[child2]){
-			swap(array, parent, child2);
-		}else{
-			swap(array, parent, child1);
-		}
-	}
-}
-
 void max_heapify(int* array, int size, int root_idx){
 	int left_idx = 2*root_idx;
     int right_idx = 2*root_idx+1;
@@ -220,14 +209,13 @@ void radix_sort(int* array, int l, int r, int d){
 }
 
 
-
-
 void swap(int* array, int i, int j) {
 	int temp = array[j]; //swap
 	array[j] = array[i];
 	array[i] = temp;
 }
 
+/*
 void debug(int* array, int l, int r) {
 	std::cout<<"d:: ";
 	for (int k = l; k<=r; k++) {
@@ -247,10 +235,11 @@ void is_sorted(int* array, int size){
 	sort_flag?std::cout<<"Sorted!"<<std::endl:std::cout<<"NOT sorted"<<std::endl;
 }
 
+
 typedef void (*fptr)(int*, int, int);
 std::ofstream myfile;
 
-int test(int size, int iter_num){
+void test(int size, int iter_num){
 
     myfile.precision(15);
 
@@ -290,18 +279,38 @@ int test(int size, int iter_num){
                                 &stooge_sort};
 
         for(int k=0;k<6;k++){
-            std::cout<<func_name[k]<<": ";
-            QueryPerformanceCounter(&start_time);
-            func_array[k](array, 0, size-1);
-            QueryPerformanceCounter(&end_time);
-            elapsed = end_time.QuadPart - start_time.QuadPart;
-            printf("%.15f usec / ", double(elapsed)/double(freq.QuadPart));
-            //std::cout<< (end_time - start_time) / CLOCKS_PER_SEC << " sec / ";
-            is_sorted(array,size);
-            myfile << double(elapsed)/double(freq.QuadPart) << " ";
-            for(int i=0;i<size;i++){
-                array[i] = buff_arr[i];
-            }
+			if (size <= 1000 || k != 5) {
+				if (size <= 10000 || k != 0) {
+					if (size <= 10000 || k != 4) {
+						if (size <= 10000 || k != 3) {
+							std::cout << func_name[k] << ": ";
+							QueryPerformanceCounter(&start_time);
+							func_array[k](array, 0, size - 1);
+							QueryPerformanceCounter(&end_time);
+							elapsed = end_time.QuadPart - start_time.QuadPart;
+							printf("%.15f usec / ", double(elapsed) / double(freq.QuadPart));
+							//std::cout<< (end_time - start_time) / CLOCKS_PER_SEC << " sec / ";
+							is_sorted(array, size);
+							myfile << double(elapsed) / double(freq.QuadPart) << " ";
+							for (int i = 0; i < size; i++) {
+								array[i] = buff_arr[i];
+							}
+						}else{
+							myfile << 0 << " ";
+						}
+
+					}
+					else {
+						myfile << 0 << " ";
+					}
+				}
+				else {
+					myfile << 0 << " ";
+				}
+			}
+			else {
+				myfile << 0 << " ";
+			}
         }
 
         std::cout<<func_name[6]<<": ";
@@ -346,10 +355,12 @@ int test(int size, int iter_num){
 
 int main(){
     myfile.open("example.txt");
-    int data_size[] = {10, 20, 50, 100, 200, 500, 1000};
-    for(int i=0; i<7; i++){
+	int data_size[] = { 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000, 10000000, 100000000};
+    for(int i=0; i<sizeof(data_size)/sizeof(int); i++){
         test(data_size[i],5);
     }
     myfile.close();
     return 0;
 }
+
+*/
