@@ -1,8 +1,16 @@
 #include "sort.h"
+#include <stdio.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+
+#include <Windows.h>
+#include <fstream>
+#include <iomanip>
 #include <cmath>
+
+#define largest_digit 5
+
 
 void selection_sort(int* array, int l, int r){
 // Implement here!
@@ -21,7 +29,7 @@ void selection_sort(int* array, int l, int r){
 
 
 void bubble_sort(int* array, int l, int r){
-// Implement here!r 
+// Implement here!r
 	for(int i=r; i>=l;i--){
 		for(int j=l;j<i;j++){
 			if(array[j]>array[j+1]){
@@ -72,7 +80,7 @@ void merge(int* array, int l, int r, int half) {
 			right_arr[i] = array[half + 1 + i];
 		}
 		right_arr[r - half] = INT_MAX;
-		
+
 		int L_ptr = 0;
 		int R_ptr = 0;
 		for (int i = l; i < r + 1; i++) {
@@ -91,24 +99,24 @@ void merge(int* array, int l, int r, int half) {
 void quick_sort(int* array, int l, int r){
 // Implement here!
 	if (l < r) {
-		int small = l;
+        int small_left = l;
 		int pivot = r;
 		int eqbig = r - 1;
-		while(small!=eqbig){
-			if(array[small]<array[pivot]){
-				small++;
+		while(small_left!=eqbig){
+			if(array[small_left]<array[pivot]){
+				small_left++;
 			}else if(array[eqbig]>=array[pivot]){
 				eqbig--;
 			}else{
-				swap(array, small, eqbig);
+				swap(array, small_left, eqbig);
 			}
 		}
-		if(array[small]>array[pivot]){
-			swap(array, small, pivot);
+		if(array[small_left]>array[pivot]){
+			swap(array, small_left, pivot);
 		}
-		debug(array, l, r);
-		quick_sort(array, l, small);
-		quick_sort(array, small+1, r);
+		//debug(array, l, r);
+		quick_sort(array, l, small_left);
+		quick_sort(array, small_left+1, r);
 	}
 }
 
@@ -123,38 +131,38 @@ void tri_max(int* array, int parent, int child1, int child2){
 }
 
 void max_heapify(int* array, int size, int root_idx){
-	int child1_idx = 2*root_idx+1;
-	int child2_idx = 2*root_idx+2;
-	if(size>=child2_idx){
-		if (array[child1_idx] > array[root_idx] || array[child2_idx] > array[root_idx]) {
-			if (array[child1_idx] > array[child2_idx]) {
-				swap(array, child1_idx, root_idx);
-				max_heapify(array, size, child1_idx);
-			}
-			else {
-				swap(array, child2_idx, root_idx);
-				max_heapify(array, size, child2_idx);
-			}
-		}
-	}else if(size==child1_idx){
-		if (array[child1_idx] > array[root_idx]) {
-			swap(array, child1_idx, root_idx);
-			max_heapify(array, size, child1_idx);
-		} 
-	}	
+	int left_idx = 2*root_idx;
+    int right_idx = 2*root_idx+1;
+    int largest_idx;
+    if(left_idx<=size && array[left_idx-1]>array[root_idx-1]){
+        largest_idx = left_idx;
+    }else{
+        largest_idx = root_idx;
+    }
+    if(right_idx<=size && array[right_idx-1] > array[largest_idx-1]){
+        largest_idx = right_idx;
+    }
+    if(largest_idx!=root_idx){
+        swap(array, largest_idx-1, root_idx-1);
+        max_heapify(array, size, largest_idx);
+    }
 }
 
 void build_max_heap(int* array, int size){
 	//build_max_heap(array, )
+	for(int i=size/2; i>=1; i--){
+        max_heapify(array, size, i);
+        //debug(array, 0, size-1);
+	}
 }
 
 void heap_sort(int* array, int size){
-// Implement here!  
+// Implement here!
 	build_max_heap(array, size);
-	for(int i=0;i<size-1;i++){
-		swap(array, 0, size-1-i);
-		max_heapify(array, size-2-i, 0);
-		debug(array, 0, size-1);
+	for(int i=size-1;i>=1;i--){
+		swap(array, 0, i);
+		max_heapify(array, i, 1);
+		//debug(array, 0, i);
 	}
 }
 
@@ -166,7 +174,7 @@ void stooge_sort(int* array, int l, int r){
 		}
 		int p1b3 = round(l+(r-l)/3.0);
 		int p2b3 = round(l+(r-l)*2/3.0);
-		debug(array, l, r);
+		//debug(array, l, r);
 		stooge_sort(array, l, p2b3);
 		stooge_sort(array, p1b3, r);
 		stooge_sort(array, l, p2b3);
@@ -188,7 +196,7 @@ void one_digit_sort(int* array, int l, int r, int key_digit){
 	for(int i=0; i<r-l+1;i++){
 		buff[i] = array[l+i];
 	}
-	
+
 	for(int i=l; i<=r; i++){
 		count[get_digit(array[i], key_digit)]++;
 	}
@@ -204,10 +212,10 @@ void one_digit_sort(int* array, int l, int r, int key_digit){
 
 void radix_sort(int* array, int l, int r, int d){
 //implement here!
-//1의자리숫자가 digit=1, 10의자리 숫자가 digit=2, ... 
+//1의자리숫자가 digit=1, 10의자리 숫자가 digit=2, ...
 	for(int i=1;i<=d;i++){
 		one_digit_sort(array, l, r, i);
-		debug(array, l, r);
+		//debug(array, l, r);
 	}
 }
 
@@ -239,42 +247,109 @@ void is_sorted(int* array, int size){
 	sort_flag?std::cout<<"Sorted!"<<std::endl:std::cout<<"NOT sorted"<<std::endl;
 }
 
-int main(){
-	int size=10;
-	int* array = new int [size];
-	srand(time(NULL));
-	for(int i=0;i<size;i++){
-		array[i] = rand() % 100000;
-		std::cout<<array[i]<<" ";
-	}
-	std::cout<<std::endl;
-	//call funcg
-	//insertion_sort(array, 0, size-1);
-	//merge_sort(array, 0, size-1);
-	//quick_sort(array, 0, size-1); // 맘에 안듬
-	int* a = new int[5];
-	a[0] = 1;
-	a[1] = 8;
-	a[2] = 3;
-	a[3] = 4;
-	a[4] = 5;
-	max_heapify(a, 5, 0);
-	debug(a, 0, 4);
-	delete[] a;
-	
-	int b;
-	std::cin >> b;
+typedef void (*fptr)(int*, int, int);
+std::ofstream myfile;
 
-	//heap_sort(array, size); // 구현x
-	//selection_sort(array, 0, size-1); 
-	//bubble_sort(array, 0, size-1);
-	//stooge_sort(array, 0, size-1);
-	//radix_sort(array, 0, size-1, 5);
-	//
-	for(int i=0; i<size;i++){
-		std::cout<<array[i]<<" ";
-	}
-	std::cout<<std::endl;
-	is_sorted(array, size);
+int test(int size, int iter_num){
+
+    myfile.precision(15);
+
+    int* array = new int [size];
+    int* buff_arr = new int [size];
+    std::cout<<"##With size: "<<size<<std::endl;
+    LARGE_INTEGER freq, start_time, end_time;
+    uint64_t elapsed;
+
+    QueryPerformanceFrequency(&freq);
+
+    for(int iter=1; iter<=iter_num; iter++){
+        srand(time(NULL));
+
+
+        std::cout<<"Try #"<<iter<<": ";
+        for(int i=0;i<size;i++){
+            array[i] = rand() % int(pow(10,largest_digit));
+            buff_arr[i] = array[i];
+            //std::cout<<array[i]<<" ";
+        }
+        //std::cout<<std::endl;
+
+        char* func_name[8] = {"insertion_sort",
+                                "merge_sort",
+                                "quick_sort",
+                                "selection_sort",
+                                "bubble_sort",
+                                "stooge_sort",
+                                "heap_sort",
+                                "radix_sort"};
+        const fptr func_array[6] = {&insertion_sort,
+                                &merge_sort,
+                                &quick_sort,
+                                &selection_sort,
+                                &bubble_sort,
+                                &stooge_sort};
+
+        for(int k=0;k<6;k++){
+            std::cout<<func_name[k]<<": ";
+            QueryPerformanceCounter(&start_time);
+            func_array[k](array, 0, size-1);
+            QueryPerformanceCounter(&end_time);
+            elapsed = end_time.QuadPart - start_time.QuadPart;
+            printf("%.15f usec / ", double(elapsed)/double(freq.QuadPart));
+            //std::cout<< (end_time - start_time) / CLOCKS_PER_SEC << " sec / ";
+            is_sorted(array,size);
+            myfile << double(elapsed)/double(freq.QuadPart) << " ";
+            for(int i=0;i<size;i++){
+                array[i] = buff_arr[i];
+            }
+        }
+
+        std::cout<<func_name[6]<<": ";
+        QueryPerformanceCounter(&start_time);
+        heap_sort(array, size);
+        QueryPerformanceCounter(&end_time);
+        elapsed = end_time.QuadPart - start_time.QuadPart;
+        printf("%.15f usec / ", double(elapsed)/double(freq.QuadPart));
+        is_sorted(array,size);
+        myfile << double(elapsed)/double(freq.QuadPart)<< " ";
+
+        for(int i=0;i<size;i++){
+            array[i] = buff_arr[i];
+        }
+
+        std::cout<<func_name[7]<<": ";
+        QueryPerformanceCounter(&start_time);
+        radix_sort(array, 0, size-1, largest_digit);
+        QueryPerformanceCounter(&end_time);
+        elapsed = end_time.QuadPart - start_time.QuadPart;
+        printf("%.15f usec / ", double(elapsed)/double(freq.QuadPart));
+        is_sorted(array,size);
+
+        myfile << double(elapsed)/double(freq.QuadPart) <<std::endl;
+
+        //*********************************************
+        //insertion_sort(array, 0, size-1);
+        //merge_sort(array, 0, size-1);
+        //quick_sort(array, 0, size-1); // 맘에 안듬
+        //heap_sort(array, size); // 구현x
+        //selection_sort(array, 0, size-1);
+        //bubble_sort(array, 0, size-1);
+        //stooge_sort(array, 0, size-1);
+        //radix_sort(array, 0, size-1, 5);
+        //**********************************************
+    }
+
+
+    delete[] array;
+    delete[] buff_arr;
 }
 
+int main(){
+    myfile.open("example.txt");
+    int data_size[] = {10, 20, 50, 100, 200, 500, 1000};
+    for(int i=0; i<7; i++){
+        test(data_size[i],5);
+    }
+    myfile.close();
+    return 0;
+}
