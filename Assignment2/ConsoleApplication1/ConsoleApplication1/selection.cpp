@@ -23,7 +23,7 @@ int array_selection(int* array, int l, int r, int k){
 			debug(k_arr, 0, k - 1);
 		}
 	}
-	
+
 	int result = k_arr[k - 1];
 	delete[] k_arr;
 
@@ -76,8 +76,32 @@ int quick_selection(int* array, int l, int r, int k){
 	}
 }
 
+int SELECT(int* array, int l, int r, int k){
+// Implement here!
+	if (l == r) {
+		return l;
+	}
+	debug(array, l, r);
+	int pivot_idx = partition(array, l, r);
+	int pivot_pos = pivot_idx - l + 1;
+	if (k == pivot_pos) {
+		return pivot_idx;
+	}
+	else if (k < pivot_pos) {
+		return quick_selection(array, l, pivot_idx - 1, k);
+	}
+	else {
+		return quick_selection(array, pivot_idx + 1, r, k - pivot_pos);
+	}
+}
+
 int linear_selection(int* array, int l, int r, int k){
 // Implement here!
+    if (l == r) {
+		return array[l];
+	}
+    debug(array, l, r);
+
 	int length = r - l + 1;
 	int group_num = length / 7 + 1;
 	int* median_arr = new int[group_num];
@@ -85,11 +109,19 @@ int linear_selection(int* array, int l, int r, int k){
 		insertion_sort(array, 7 * i, 7 * i + 6);
 		median_arr[i] = array[7 * i + 3];
 	}
-	
-
-
+	int good_pivot_idx = SELECT(median_arr, 0, group_num-1, group_num/2);
 
 	delete[] median_arr;
+	int pivot_pos = good_pivot_idx - l + 1;
+	if (k == pivot_pos) {
+		return array[good_pivot_idx];
+	}
+	else if (k < pivot_pos) {
+		return linear_selection(array, l, good_pivot_idx - 1, k);
+	}
+	else {
+		return linear_selection(array, good_pivot_idx + 1, r, k - pivot_pos);
+	}
 
 	return 0;
 }
@@ -101,7 +133,7 @@ int main() {
 	int k_th_num;
 	int size = 12;
 	int k = 8;
-	
+
 	const FP func_ptr[4] = { &array_selection,
 							 &heap_selection,
 							 &quick_selection,
@@ -111,7 +143,7 @@ int main() {
 		k_th_num = func_ptr[i](arr, 0, size - 1, k);
 		std::cout << k_th_num << std::endl;
 	}
-	
+
 	int a;
 	std::cin >> a;
 
